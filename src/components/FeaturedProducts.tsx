@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
@@ -60,11 +59,11 @@ const FeaturedProducts = () => {
   };
 
   return (
-    <section className="py-16 bg-white">
+    <section className="py-16 bg-gradient-to-br from-rose-50 via-white to-pink-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-serif font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl sm:text-4xl font-serif font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent mb-4">
             Featured Collection
           </h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -74,12 +73,11 @@ const FeaturedProducts = () => {
         </div>
 
         {/* Products Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {featuredProducts.map((product) => (
             <ProductCard
               key={product.id}
               product={product}
-              onToggleFavorite={handleToggleFavorite}
             />
           ))}
         </div>
@@ -88,7 +86,7 @@ const FeaturedProducts = () => {
         <div className="text-center mt-12">
           <Link 
             to="/all-products"
-            className="bg-rose-600 text-white px-8 py-3 rounded-full font-medium hover:bg-rose-700 transition-colors inline-block"
+            className="bg-gradient-to-r from-rose-600 to-pink-600 text-white px-8 py-3 rounded-full font-semibold hover:from-rose-700 hover:to-pink-700 transition-all duration-300 inline-block shadow-lg hover:shadow-xl hover:scale-105"
           >
             View All Products
           </Link>

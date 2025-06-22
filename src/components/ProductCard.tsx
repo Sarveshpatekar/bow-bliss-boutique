@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { Heart, ShoppingCart } from 'lucide-react';
+import { Heart, ShoppingCart, Star } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 interface Product {
   id: string;
@@ -18,58 +19,68 @@ interface Product {
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart?: (product: Product) => void;
-  onToggleFavorite?: (productId: string) => void;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ 
-  product, 
-  onToggleFavorite 
-}) => {
+const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const { dispatch } = useCart();
+  const { state: favoritesState, dispatch: favoritesDispatch } = useFavorites();
+  
+  const isFavorite = favoritesState.favoriteItems.includes(product.id);
 
   const handleAddToCart = () => {
     dispatch({ type: 'ADD_ITEM', payload: product });
   };
 
+  const handleToggleFavorite = () => {
+    favoritesDispatch({ type: 'TOGGLE_FAVORITE', payload: product.id });
+  };
+
+  const discountPercentage = product.originalPrice 
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : 0;
+
   return (
-    <div className="group relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
+    <div className="group relative bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 border border-gray-100 hover:border-rose-200">
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-gray-100">
+      <div className="relative aspect-square overflow-hidden bg-gradient-to-br from-rose-50 to-pink-50">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
         />
         
         {/* Badges */}
         <div className="absolute top-3 left-3 flex flex-col gap-2">
           {product.isNew && (
-            <span className="bg-rose-600 text-white text-xs px-2 py-1 rounded-full font-medium">
+            <span className="bg-gradient-to-r from-rose-500 to-pink-500 text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
               New
             </span>
           )}
           {product.originalPrice && (
-            <span className="bg-green-600 text-white text-xs px-2 py-1 rounded-full font-medium">
-              Sale
+            <span className="bg-gradient-to-r from-green-500 to-emerald-500 text-white text-xs px-3 py-1 rounded-full font-semibold shadow-lg">
+              -{discountPercentage}%
             </span>
           )}
         </div>
 
         {/* Favorite Button */}
         <button
-          onClick={() => onToggleFavorite?.(product.id)}
-          className="absolute top-3 right-3 p-2 bg-white/80 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white"
+          onClick={handleToggleFavorite}
+          className="absolute top-3 right-3 p-2.5 bg-white/90 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-white hover:scale-110 shadow-lg"
         >
           <Heart 
-            className={`h-4 w-4 ${product.isFavorite ? 'fill-rose-600 text-rose-600' : 'text-gray-600'}`} 
+            className={`h-5 w-5 transition-colors duration-200 ${
+              isFavorite 
+                ? 'fill-rose-500 text-rose-500' 
+                : 'text-gray-400 hover:text-rose-500'
+            }`} 
           />
         </button>
 
         {/* Quick Add to Cart */}
         <button
           onClick={handleAddToCart}
-          className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-rose-600 text-white px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:bg-rose-700"
+          className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-gradient-to-r from-rose-600 to-pink-600 text-white px-6 py-2.5 rounded-full text-sm font-semibold opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:from-rose-700 hover:to-pink-700 shadow-lg hover:shadow-xl hover:scale-105"
         >
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
@@ -77,35 +88,43 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </div>
 
       {/* Product Info */}
-      <div className="p-4">
-        <h3 className="font-medium text-gray-900 mb-1 line-clamp-2">
+      <div className="p-5">
+        <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-lg group-hover:text-rose-600 transition-colors">
           {product.name}
         </h3>
         
         {/* Colors */}
-        <div className="flex gap-1 mb-2">
+        <div className="flex gap-1.5 mb-3">
           {product.colors.slice(0, 4).map((color, index) => (
             <div
               key={index}
-              className="w-4 h-4 rounded-full border-2 border-white shadow-sm"
+              className="w-5 h-5 rounded-full border-2 border-white shadow-md ring-1 ring-gray-200 hover:scale-110 transition-transform cursor-pointer"
               style={{ backgroundColor: color }}
             />
           ))}
           {product.colors.length > 4 && (
-            <span className="text-xs text-gray-500 ml-1">
-              +{product.colors.length - 4}
+            <span className="text-xs text-gray-500 ml-2 font-medium">
+              +{product.colors.length - 4} more
             </span>
           )}
         </div>
 
-        {/* Size */}
-        {product.size && (
-          <p className="text-xs text-gray-500 mb-2">Size: {product.size}</p>
-        )}
+        {/* Size & Rating */}
+        <div className="flex items-center justify-between mb-3">
+          {product.size && (
+            <span className="text-xs text-gray-600 bg-gray-100 px-2 py-1 rounded-full font-medium">
+              {product.size}
+            </span>
+          )}
+          <div className="flex items-center gap-1">
+            <Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
+            <span className="text-xs text-gray-600 font-medium">4.8</span>
+          </div>
+        </div>
 
         {/* Price */}
-        <div className="flex items-center gap-2">
-          <span className="font-bold text-lg text-gray-900">
+        <div className="flex items-center gap-3">
+          <span className="font-bold text-xl text-gray-900">
             ₹{product.price}
           </span>
           {product.originalPrice && (

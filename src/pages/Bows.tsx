@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
@@ -85,12 +84,12 @@ const Bows = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
       <Header />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Page Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl sm:text-5xl font-serif font-bold text-gray-900 mb-4">
+          <h1 className="text-4xl sm:text-5xl font-serif font-bold bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent mb-4">
             Bows Collection
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
@@ -116,12 +115,11 @@ const Bows = () => {
               </p>
             </div>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {(filteredProducts.length > 0 ? filteredProducts : bowProducts).map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}
-                  onToggleFavorite={handleToggleFavorite}
                 />
               ))}
             </div>
