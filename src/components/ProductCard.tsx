@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Heart, ShoppingCart } from 'lucide-react';
+import { useCart } from '../contexts/CartContext';
 
 interface Product {
   id: string;
@@ -12,6 +13,7 @@ interface Product {
   colors: string[];
   isNew?: boolean;
   isFavorite?: boolean;
+  size?: string;
 }
 
 interface ProductCardProps {
@@ -22,9 +24,14 @@ interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ 
   product, 
-  onAddToCart,
   onToggleFavorite 
 }) => {
+  const { dispatch } = useCart();
+
+  const handleAddToCart = () => {
+    dispatch({ type: 'ADD_ITEM', payload: product });
+  };
+
   return (
     <div className="group relative bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300">
       {/* Product Image */}
@@ -61,7 +68,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
         {/* Quick Add to Cart */}
         <button
-          onClick={() => onAddToCart?.(product)}
+          onClick={handleAddToCart}
           className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-rose-600 text-white px-4 py-2 rounded-full text-sm font-medium opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2 hover:bg-rose-700"
         >
           <ShoppingCart className="h-4 w-4" />
@@ -90,6 +97,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           )}
         </div>
+
+        {/* Size */}
+        {product.size && (
+          <p className="text-xs text-gray-500 mb-2">Size: {product.size}</p>
+        )}
 
         {/* Price */}
         <div className="flex items-center gap-2">

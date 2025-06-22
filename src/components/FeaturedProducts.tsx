@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import ProductCard from './ProductCard';
 
 const FeaturedProducts = () => {
@@ -14,7 +15,8 @@ const FeaturedProducts = () => {
       category: 'scrunchie' as const,
       colors: ['#FFB6C1', '#FFC0CB', '#DDA0DD', '#F0E68C'],
       isNew: true,
-      isFavorite: false
+      isFavorite: false,
+      size: 'Regular'
     },
     {
       id: '2',
@@ -24,7 +26,8 @@ const FeaturedProducts = () => {
       category: 'bow' as const,
       colors: ['#4169E1', '#191970', '#6495ED'],
       isNew: false,
-      isFavorite: true
+      isFavorite: true,
+      size: 'Medium'
     },
     {
       id: '3',
@@ -34,7 +37,8 @@ const FeaturedProducts = () => {
       category: 'scrunchie' as const,
       colors: ['#F5F5DC', '#D2B48C', '#DEB887', '#BC8F8F'],
       isNew: false,
-      isFavorite: false
+      isFavorite: false,
+      size: 'Regular'
     },
     {
       id: '4',
@@ -45,14 +49,10 @@ const FeaturedProducts = () => {
       category: 'bow' as const,
       colors: ['#FFB347', '#FF69B4', '#98FB98', '#DDA0DD'],
       isNew: true,
-      isFavorite: false
+      isFavorite: false,
+      size: 'Large'
     }
   ];
-
-  const handleAddToCart = (product: any) => {
-    console.log('Added to cart:', product);
-    // TODO: Implement cart functionality
-  };
 
   const handleToggleFavorite = (productId: string) => {
     console.log('Toggle favorite:', productId);
@@ -79,7 +79,6 @@ const FeaturedProducts = () => {
             <ProductCard
               key={product.id}
               product={product}
-              onAddToCart={handleAddToCart}
               onToggleFavorite={handleToggleFavorite}
             />
           ))}
@@ -87,9 +86,12 @@ const FeaturedProducts = () => {
 
         {/* View All Button */}
         <div className="text-center mt-12">
-          <button className="bg-rose-600 text-white px-8 py-3 rounded-full font-medium hover:bg-rose-700 transition-colors">
+          <Link 
+            to="/all-products"
+            className="bg-rose-600 text-white px-8 py-3 rounded-full font-medium hover:bg-rose-700 transition-colors inline-block"
+          >
             View All Products
-          </button>
+          </Link>
         </div>
       </div>
     </section>

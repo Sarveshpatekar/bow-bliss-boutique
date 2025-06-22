@@ -2,10 +2,15 @@
 import React, { useState } from 'react';
 import { ShoppingCart, Menu, X, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useCart } from '../contexts/CartContext';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [cartCount] = useState(0);
+  const { state, dispatch } = useCart();
+
+  const openCart = () => {
+    dispatch({ type: 'OPEN_CART' });
+  };
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -42,11 +47,14 @@ const Header = () => {
             <button className="relative p-2 text-gray-700 hover:text-rose-600 transition-colors">
               <Heart className="h-6 w-6" />
             </button>
-            <button className="relative p-2 text-gray-700 hover:text-rose-600 transition-colors">
+            <button 
+              onClick={openCart}
+              className="relative p-2 text-gray-700 hover:text-rose-600 transition-colors"
+            >
               <ShoppingCart className="h-6 w-6" />
-              {cartCount > 0 && (
+              {state.items.length > 0 && (
                 <span className="absolute -top-1 -right-1 bg-rose-600 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
-                  {cartCount}
+                  {state.items.length}
                 </span>
               )}
             </button>
