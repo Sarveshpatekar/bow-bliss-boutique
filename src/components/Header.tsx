@@ -19,7 +19,7 @@ const Header = () => {
           {/* Logo */}
           <Link to="/" className="flex items-center">
             <h1 className="text-2xl font-serif text-rose-600 font-bold">
-              Belle Bows
+              Minimuze
             </h1>
           </Link>
 
@@ -39,6 +39,9 @@ const Header = () => {
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-rose-600 transition-colors font-medium">
               About
+            </Link>
+            <Link to="/admin" className="text-gray-700 hover:text-rose-600 transition-colors font-medium">
+              Admin
             </Link>
           </nav>
 
@@ -107,6 +110,13 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
+              </Link>
+              <Link
+                to="/admin"
+                className="block px-4 py-2 text-gray-700 hover:text-rose-600 hover:bg-rose-50 transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                Admin
               </Link>
             </div>
           </div>
