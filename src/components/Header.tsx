@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { ShoppingCart, Menu, X, Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -44,10 +45,6 @@ const Header = () => {
             </Link>
             <Link to="/about" className="text-gray-700 hover:text-rose-600 transition-colors font-medium relative group">
               About
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-rose-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
-            </Link>
-            <Link to="/admin" className="text-gray-700 hover:text-rose-600 transition-colors font-medium relative group">
-              Admin
               <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-rose-600 to-pink-600 group-hover:w-full transition-all duration-300"></span>
             </Link>
           </nav>
@@ -122,13 +119,6 @@ const Header = () => {
                 onClick={() => setIsMenuOpen(false)}
               >
                 About
-              </Link>
-              <Link
-                to="/admin"
-                className="block px-4 py-2 text-gray-700 hover:text-rose-600 hover:bg-rose-50 transition-colors"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Admin
               </Link>
             </div>
           </div>
