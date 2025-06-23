@@ -11,6 +11,8 @@ import About from "./pages/About";
 import Scrunchies from "./pages/Scrunchies";
 import Bows from "./pages/Bows";
 import AllProducts from "./pages/AllProducts";
+import Checkout from "./pages/Checkout";
+import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
 import CartSidebar from "./components/CartSidebar";
 
@@ -31,6 +33,8 @@ const App = () => (
                 <Route path="/scrunchies" element={<Scrunchies />} />
                 <Route path="/bows" element={<Bows />} />
                 <Route path="/all-products" element={<AllProducts />} />
+                <Route path="/checkout" element={<Checkout />} />
+                <Route path="/order-success" element={<OrderSuccess />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>

@@ -7,6 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { useForm } from 'react-hook-form';
 import { Camera, Upload, QrCode } from 'lucide-react';
+import { createOrder } from '../services/orderService';
+import { useCart } from '../contexts/CartContext';
+import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface CheckoutFormData {
   name: string;
@@ -19,12 +23,16 @@ interface CheckoutFormData {
 
 interface CheckoutFormProps {
   cartTotal: number;
-  onSubmit: (data: CheckoutFormData & { paymentScreenshot?: File }) => void;
+  onSubmit?: (data: CheckoutFormData & { paymentScreenshot?: File }) => void;
 }
 
-const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal, onSubmit }) => {
+const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal }) => {
   const [paymentScreenshot, setPaymentScreenshot] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const { state, dispatch } = useCart();
+  const { toast } = useToast();
+  const navigate = useNavigate();
 
   const form = useForm<CheckoutFormData>({
     defaultValues: {
@@ -46,8 +54,46 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal, onSubmit }) => {
     }
   };
 
-  const handleSubmit = (data: CheckoutFormData) => {
-    onSubmit({ ...data, paymentScreenshot: paymentScreenshot || undefined });
+  const handleSubmit = async (data: CheckoutFormData) => {
+    if (!paymentScreenshot) {
+      toast({
+        title: "Payment Screenshot Required",
+        description: "Please upload a payment screenshot to continue.",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      await createOrder({
+        customer_name: data.name,
+        customer_email: data.email,
+        customer_phone: data.phone,
+        customer_address: data.address,
+        customer_city: data.city,
+        customer_pincode: data.pincode,
+        order_items: state.items,
+        total_amount: cartTotal,
+        payment_screenshot: paymentScreenshot
+      });
+
+      toast({
+        title: "Order Placed Successfully!",
+        description: "Your order has been submitted and is pending verification.",
+      });
+
+      dispatch({ type: 'CLEAR_CART' });
+      navigate('/order-success');
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to place order. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -71,7 +117,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal, onSubmit }) => {
           </CardHeader>
           <CardContent>
             <Form {...form}>
-              <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+              <form className="space-y-4">
                 <FormField
                   control={form.control}
                   name="name"
@@ -194,7 +240,7 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal, onSubmit }) => {
             {/* Payment Screenshot Upload */}
             <div className="space-y-4">
               <label className="block text-sm font-medium text-gray-700">
-                Upload Payment Screenshot
+                Upload Payment Screenshot *
               </label>
               
               <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
@@ -238,9 +284,9 @@ const CheckoutForm: React.FC<CheckoutFormProps> = ({ cartTotal, onSubmit }) => {
             <Button 
               onClick={form.handleSubmit(handleSubmit)}
               className="w-full bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-700 hover:to-pink-700 text-white font-semibold py-3 rounded-lg"
-              disabled={!paymentScreenshot}
+              disabled={!paymentScreenshot || isSubmitting}
             >
-              Place Order
+              {isSubmitting ? 'Placing Order...' : 'Place Order'}
             </Button>
 
             <p className="text-xs text-gray-500 text-center">

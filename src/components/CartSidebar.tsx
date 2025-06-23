@@ -1,10 +1,11 @@
-
 import React from 'react';
 import { X, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { useCart } from '../contexts/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const CartSidebar = () => {
   const { state, dispatch } = useCart();
+  const navigate = useNavigate();
 
   const updateQuantity = (id: string, quantity: number) => {
     dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } });
@@ -15,9 +16,8 @@ const CartSidebar = () => {
   };
 
   const proceedToCheckout = () => {
-    // For now, we'll just log the cart contents
-    console.log('Proceeding to checkout with:', state.items);
-    // In a real app, this would navigate to checkout page
+    navigate('/checkout');
+    dispatch({ type: 'CLOSE_CART' });
   };
 
   if (!state.isOpen) return null;
