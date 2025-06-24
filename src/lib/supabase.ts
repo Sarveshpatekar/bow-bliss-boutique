@@ -1,8 +1,8 @@
 
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || 'https://placeholder.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'placeholder-key';
+const supabaseUrl = 'https://qgeetcuboxcmfdgimoat.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFnZWV0Y3Vib3hjbWZkZ2ltb2F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTA3MDE4MzIsImV4cCI6MjA2NjI3NzgzMn0._qw-Xc0VdVvw6Dg-s-3-hqSB1vds64qJ4Ttmfw4nRr8';
 
 console.log('Supabase URL:', supabaseUrl);
 console.log('Supabase Key exists:', !!supabaseAnonKey);
