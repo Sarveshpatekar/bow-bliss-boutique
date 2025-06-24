@@ -6,6 +6,7 @@ import Footer from '../components/Footer';
 import CheckoutForm from '../components/CheckoutForm';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '@/hooks/use-toast';
+import { createOrder } from '../services/orderService';
 
 interface CheckoutFormData {
   name: string;
@@ -26,8 +27,7 @@ const Checkout = () => {
   const handleOrderSubmit = async (data: CheckoutFormData) => {
     setIsSubmitting(true);
     try {
-      // TODO: Replace with actual Supabase integration
-      console.log('Order data:', {
+      console.log('Creating order with data:', {
         customerInfo: {
           name: data.name,
           email: data.email,
@@ -41,8 +41,21 @@ const Checkout = () => {
         paymentScreenshot: data.paymentScreenshot
       });
 
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      // Create order using Supabase
+      const orderData = {
+        customer_name: data.name,
+        customer_email: data.email,
+        customer_phone: data.phone,
+        customer_address: data.address,
+        customer_city: data.city,
+        customer_pincode: data.pincode,
+        order_items: state.items,
+        total_amount: state.total,
+        payment_screenshot: data.paymentScreenshot
+      };
+
+      const result = await createOrder(orderData);
+      console.log('Order created successfully:', result);
 
       toast({
         title: "Order Placed Successfully!",
@@ -52,6 +65,7 @@ const Checkout = () => {
       dispatch({ type: 'CLEAR_CART' });
       navigate('/order-success');
     } catch (error) {
+      console.error('Order creation failed:', error);
       toast({
         title: "Error",
         description: "Failed to place order. Please try again.",
