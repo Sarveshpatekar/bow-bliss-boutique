@@ -95,6 +95,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         <h3 className="font-semibold text-gray-900 mb-2 line-clamp-2 text-lg group-hover:text-rose-600 transition-colors">
           {product.name}
         </h3>
+        <span className="inline-block mb-2 text-xs font-medium text-rose-600 bg-rose-50 px-2 py-1 rounded-full capitalize">
+          {product.category}
+        </span>
+
         
         {/* Colors */}
         <div className="flex gap-1.5 mb-3">

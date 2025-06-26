@@ -1,21 +1,23 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
+import { supabase } from '../lib/supabase';
 
 const Scrunchies = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
-  
-  // Sample scrunchie products data
-  const scrunchieProducts = [
+  const [supabaseScrunchies, setSupabaseScrunchies] = useState([]);
+
+  // Hardcoded local products
+  const localScrunchieProducts = [
     {
       id: 's1',
       name: 'Silk Scrunchie Set - Blush Collection',
       price: 299,
       originalPrice: 399,
       image: 'https://images.unsplash.com/photo-1618160702438-9b02ab6515c9?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#FFB6C1', '#FFC0CB', '#DDA0DD', '#F0E68C'],
       isNew: true,
       isFavorite: false,
@@ -26,7 +28,7 @@ const Scrunchies = () => {
       name: 'Satin Scrunchie - Neutral Tones',
       price: 249,
       image: 'https://images.unsplash.com/photo-1721322800607-8c38375eef04?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#F5F5DC', '#D2B48C', '#DEB887', '#BC8F8F'],
       isNew: false,
       isFavorite: false,
@@ -38,7 +40,7 @@ const Scrunchies = () => {
       price: 349,
       originalPrice: 449,
       image: 'https://images.unsplash.com/photo-1606760227091-3dd870d97f1d?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#8B0000', '#4B0082', '#008B8B', '#DAA520'],
       isNew: false,
       isFavorite: true,
@@ -49,7 +51,7 @@ const Scrunchies = () => {
       name: 'Cotton Scrunchie - Pastel Dreams',
       price: 199,
       image: 'https://images.unsplash.com/photo-1544376664-80b17f09d399?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#E6E6FA', '#F0E68C', '#FFB6C1', '#98FB98'],
       isNew: true,
       isFavorite: false,
@@ -60,7 +62,7 @@ const Scrunchies = () => {
       name: 'Luxury Silk Scrunchie - Rose Gold',
       price: 399,
       image: 'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#E8B4B8', '#D4AF37', '#F4C2C2'],
       isNew: false,
       isFavorite: false,
@@ -71,7 +73,7 @@ const Scrunchies = () => {
       name: 'Floral Print Scrunchie Collection',
       price: 279,
       image: 'https://images.unsplash.com/photo-1465146344425-f00d5f5c8f07?w=400&h=400&fit=crop&crop=center',
-      category: 'scrunchie' as const,
+      category: 'scrunchie',
       colors: ['#FFB347', '#FF69B4', '#98FB98', '#DDA0DD'],
       isNew: true,
       isFavorite: true,
@@ -79,9 +81,38 @@ const Scrunchies = () => {
     }
   ];
 
-  const handleToggleFavorite = (productId: string) => {
-    console.log('Toggle favorite:', productId);
-  };
+  // Fetch scrunchies from Supabase
+  useEffect(() => {
+    const fetchScrunchies = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .eq('category', 'scrunchie')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Error fetching scrunchies:', error.message);
+      } else {
+        const mapped = data.map(item => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image_url,
+          images: [item.image_url],
+          category: item.category,
+          colors: item.colors ? item.colors.split(',') : [],
+          size: item.size || '',
+          isNew: true,
+          isFavorite: false,
+        }));
+        setSupabaseScrunchies(mapped);
+      }
+    };
+
+    fetchScrunchies();
+  }, []);
+
+  const allScrunchieProducts = [...supabaseScrunchies, ...localScrunchieProducts];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
@@ -102,7 +133,7 @@ const Scrunchies = () => {
           {/* Filters Sidebar */}
           <div className="lg:w-1/4">
             <ProductFilters 
-              products={scrunchieProducts}
+              products={allScrunchieProducts}
               onFilterChange={setFilteredProducts}
             />
           </div>
@@ -111,12 +142,12 @@ const Scrunchies = () => {
           <div className="lg:w-3/4">
             <div className="flex justify-between items-center mb-6">
               <p className="text-gray-600">
-                {(filteredProducts.length || scrunchieProducts.length)} products found
+                {(filteredProducts.length || allScrunchieProducts.length)} products found
               </p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-              {(filteredProducts.length > 0 ? filteredProducts : scrunchieProducts).map((product) => (
+              {(filteredProducts.length > 0 ? filteredProducts : allScrunchieProducts).map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}

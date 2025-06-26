@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 
@@ -36,10 +35,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({ products, onFilterChang
   useEffect(() => {
     let filtered = [...products];
 
-    // Category filter
-    if (filters.category) {
-      filtered = filtered.filter(product => product.category === filters.category);
-    }
+    // NOTE: Category filter removed
 
     // Price range filter
     if (filters.priceRange) {
@@ -61,23 +57,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({ products, onFilterChang
       filtered = filtered.filter(product => product.size === filters.size);
     }
 
-    // Sort filter
-    if (filters.sortBy) {
-      switch (filters.sortBy) {
-        case 'price-low':
-          filtered.sort((a, b) => a.price - b.price);
-          break;
-        case 'price-high':
-          filtered.sort((a, b) => b.price - a.price);
-          break;
-        case 'newest':
-          filtered.sort((a, b) => (b.isNew ? 1 : 0) - (a.isNew ? 1 : 0));
-          break;
-        case 'name':
-          filtered.sort((a, b) => a.name.localeCompare(b.name));
-          break;
-      }
-    }
+    // NOTE: Sort filter removed
 
     onFilterChange(filtered);
   }, [filters, products, onFilterChange]);
@@ -117,42 +97,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({ products, onFilterChang
         </button>
       </div>
 
-      {/* Category Filter */}
-      <div className="mb-6 border-b border-gray-100 pb-4">
-        <button
-          onClick={() => toggleSection('category')}
-          className="flex justify-between items-center w-full text-left"
-        >
-          <h4 className="font-medium text-gray-900">Category</h4>
-          <ChevronDown 
-            className={`h-4 w-4 transition-transform ${expandedSections.category ? 'rotate-180' : ''}`} 
-          />
-        </button>
-        {expandedSections.category && (
-          <div className="mt-3 space-y-2">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="category"
-                checked={filters.category === 'scrunchie'}
-                onChange={() => handleFilterChange('category', 'scrunchie')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Scrunchies</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="category"
-                checked={filters.category === 'bow'}
-                onChange={() => handleFilterChange('category', 'bow')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Bows</span>
-            </label>
-          </div>
-        )}
-      </div>
+      {/* Removed Category Filter */}
 
       {/* Price Range Filter */}
       <div className="mb-6 border-b border-gray-100 pb-4">
@@ -230,62 +175,7 @@ const ProductFilters: React.FC<ProductFiltersProps> = ({ products, onFilterChang
         )}
       </div>
 
-      {/* Sort Filter */}
-      <div className="mb-6">
-        <button
-          onClick={() => toggleSection('sort')}
-          className="flex justify-between items-center w-full text-left"
-        >
-          <h4 className="font-medium text-gray-900">Sort By</h4>
-          <ChevronDown 
-            className={`h-4 w-4 transition-transform ${expandedSections.sort ? 'rotate-180' : ''}`} 
-          />
-        </button>
-        {expandedSections.sort && (
-          <div className="mt-3 space-y-2">
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="sortBy"
-                checked={filters.sortBy === 'newest'}
-                onChange={() => handleFilterChange('sortBy', 'newest')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Newest First</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="sortBy"
-                checked={filters.sortBy === 'price-low'}
-                onChange={() => handleFilterChange('sortBy', 'price-low')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Price: Low to High</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="sortBy"
-                checked={filters.sortBy === 'price-high'}
-                onChange={() => handleFilterChange('sortBy', 'price-high')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Price: High to Low</span>
-            </label>
-            <label className="flex items-center">
-              <input
-                type="radio"
-                name="sortBy"
-                checked={filters.sortBy === 'name'}
-                onChange={() => handleFilterChange('sortBy', 'name')}
-                className="text-rose-600 focus:ring-rose-600"
-              />
-              <span className="ml-2 text-sm text-gray-700">Name A-Z</span>
-            </label>
-          </div>
-        )}
-      </div>
+      {/* Removed Sort Filter */}
     </div>
   );
 };

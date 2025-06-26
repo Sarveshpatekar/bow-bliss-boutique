@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -15,7 +14,10 @@ import AllProducts from "./pages/AllProducts";
 import Checkout from "./pages/Checkout";
 import OrderSuccess from "./pages/OrderSuccess";
 import NotFound from "./pages/NotFound";
+import Admin from "./pages/Admin"; // ✅ add this
 import CartSidebar from "./components/CartSidebar";
+import AdminLogin from './pages/AdminLogin';
+import AdminProtectedRoute from "./pages/AdminProtectedRoute";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -26,11 +28,7 @@ const queryClient = new QueryClient({
   },
 });
 
-console.log('App component loading...');
-
 const App = () => {
-  console.log('App component rendering...');
-  
   return (
     <ErrorBoundary>
       <QueryClientProvider client={queryClient}>
@@ -49,6 +47,10 @@ const App = () => {
                     <Route path="/all-products" element={<AllProducts />} />
                     <Route path="/checkout" element={<Checkout />} />
                     <Route path="/order-success" element={<OrderSuccess />} />
+                    <Route path="/admin" element={<AdminProtectedRoute><Admin /></AdminProtectedRoute>} />
+
+                    <Route path="/admin-login" element={<AdminLogin />} />
+
                     <Route path="*" element={<NotFound />} />
                   </Routes>
                   <CartSidebar />

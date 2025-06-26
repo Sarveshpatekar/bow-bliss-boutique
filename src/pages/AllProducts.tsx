@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 import ProductCard from '../components/ProductCard';
 import ProductFilters from '../components/ProductFilters';
+import { supabase } from '../lib/supabase';
 
 const AllProducts = () => {
+  const [supabaseProducts, setSupabaseProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  
-  // Combined products data
-  const allProducts = [
-    // Scrunchies
+
+  // Your static hardcoded products
+  const localProducts = [
     {
       id: 's1',
       name: 'Silk Scrunchie Set - Blush Collection',
@@ -33,7 +34,6 @@ const AllProducts = () => {
       isFavorite: false,
       size: 'Regular'
     },
-    // Bows
     {
       id: 'b1',
       name: 'Velvet Hair Bow - Royal Blue',
@@ -82,9 +82,42 @@ const AllProducts = () => {
     }
   ];
 
-  const handleToggleFavorite = (productId: string) => {
-    console.log('Toggle favorite:', productId);
-  };
+  // Fetch Supabase products
+  useEffect(() => {
+    const fetchProducts = async () => {
+      const { data, error } = await supabase
+        .from('products')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) {
+        console.error('Supabase fetch error:', error.message);
+      } else {
+        const mapped = data.map((item) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          image: item.image_url,
+          images: [item.image_url],
+          category: item.category,
+          colors: item.colors ? item.colors.split(',') : [],
+          size: item.size || '',
+          isNew: true,
+          isFavorite: false,
+        }));
+        setSupabaseProducts(mapped);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const allProducts = [...supabaseProducts, ...localProducts];
+
+  // ✅ Automatically apply full product list to filteredProducts on first load
+  useEffect(() => {
+    setFilteredProducts(allProducts);
+  }, [supabaseProducts]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-rose-50 via-white to-pink-50">
@@ -117,7 +150,7 @@ const AllProducts = () => {
                 {(filteredProducts.length || allProducts.length)} products found
               </p>
             </div>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {(filteredProducts.length > 0 ? filteredProducts : allProducts).map((product) => (
                 <ProductCard
